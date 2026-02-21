@@ -1,24 +1,39 @@
-// TODO: Import AI SDK dependencies
-// import { createGateway, wrapLanguageModel } from 'ai';
-// import { env } from '$env/dynamic/private';
+import { createGateway, wrapLanguageModel } from 'ai';
+import { env } from '$env/dynamic/private';
 
-// TODO: Create the AI Gateway client
-// const gateway = createGateway({
-//   apiKey: env.AI_GATEWAY_API_KEY ?? ''
-// });
+const gateway = createGateway({
+	apiKey: env.AI_GATEWAY_API_KEY ?? ''
+});
 
-// TODO: Define primary and fallback model names
-// const PRIMARY_MODEL = 'anthropic/claude-sonnet-4';
-// const FALLBACK_MODEL = 'anthropic/claude-haiku-4.5';
+const PRIMARY_MODEL = 'anthropic/claude-sonnet-4';
+const FALLBACK_MODEL = 'anthropic/claude-haiku-4.5';
 
-// TODO: Create a withUsageTracking wrapper using wrapLanguageModel
-// The middleware object needs specificationVersion: 'v3'
-// The middleware should:
-// 1. Use the wrapGenerate hook to intercept generate calls
-// 2. Call doGenerate(), then log usage with result.usage.inputTokens.total and result.usage.outputTokens.total
-// 3. Return the result
+function withUsageTracking(model: ReturnType<typeof gateway>) {
+	return wrapLanguageModel({
+		model,
+		middleware: {
+			specificationVersion: 'v3',
+			wrapGenerate: async ({ doGenerate }) => {
+				const result = await doGenerate();
+				if (result.usage) {
+					const input = result.usage.inputTokens.total ?? 0;
+					const output = result.usage.outputTokens.total ?? 0;
+					console.log(`[AI Usage] Input tokens: ${input}`);
+					console.log(`[AI Usage] Output tokens: ${output}`);
+					console.log(`[AI Usage] Total tokens: ${input + output}`);
+				}
+				return result;
+			}
+		}
+	});
+}
 
-// TODO: Export getModel() and getFallbackModel() functions
-// Both should return a model wrapped with usage tracking
+export function getModel() {
+	return withUsageTracking(gateway(PRIMARY_MODEL));
+}
 
-export {};
+export function getFallbackModel() {
+	return withUsageTracking(gateway(FALLBACK_MODEL));
+}
+
+export { PRIMARY_MODEL, FALLBACK_MODEL };

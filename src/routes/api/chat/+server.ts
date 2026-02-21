@@ -1,53 +1,85 @@
-import { json } from '@sveltejs/kit';
+import { streamText, tool, stepCountIs } from 'ai';
+import { valibotSchema } from '@ai-sdk/valibot';
+import { resorts } from '$lib/data/resorts';
+import { CreateAlertToolInputSchema } from '$lib/schemas/alert';
+import { getModel } from '$lib/ai/provider';
 import type { RequestHandler } from './$types';
-
-// TODO: Import AI SDK dependencies
-// import { createGateway, streamText, tool, stepCountIs } from 'ai';
-// import { valibotSchema } from '@ai-sdk/valibot';
-
-// TODO: Import resort data for the system prompt
-// import { resorts } from '$lib/data/resorts';
-
-// TODO: Import the shared Valibot schema for tool input
-// import { CreateAlertToolInputSchema } from '$lib/schemas/alert';
-
-// TODO: Import environment variables
-// import { env } from '$env/dynamic/private';
-
-// TODO: Create the AI Gateway client
-// const gateway = createGateway({
-//   apiKey: env.AI_GATEWAY_API_KEY ?? ''
-// });
-
-// TODO: Define the tool using the Valibot schema
-// Use tool() with:
-// - inputSchema: valibotSchema(CreateAlertToolInputSchema)
-// - execute: async function that validates the resort and returns alert data
-// The schema accepts:
-// - resortId: string (e.g., "mammoth", "grand-targhee")
-// - condition: one of:
-//   - { type: 'snowfall', operator: 'gt'|'gte'|'lt'|'lte', value: number, unit: 'inches' }
-//   - { type: 'temperature', operator: 'gt'|'gte'|'lt'|'lte', value: number, unit: 'fahrenheit'|'celsius' }
-//   - { type: 'conditions', match: 'powder'|'clear'|'snowing'|'windy' }
 
 export const POST: RequestHandler = async ({ request }) => {
 	const { message } = await request.json();
 
-	// TODO: Implement streaming chat with AI SDK
-	// 1. Create a system prompt that lists available resorts
-	// 2. Use streamText() with the create_alert tool
-	// 3. Use stopWhen: stepCountIs(3) to allow multi-step tool use
-	// 4. Iterate result.fullStream — handle 'text-delta' and 'tool-result' events
-	//    - part.type === 'text-delta' → part.text (the token content)
-	//    - part.type === 'tool-result' → part.output (the tool result)
-	// 5. Return a streaming response with SSE format
+	const resortList = resorts.map((r) => `- ${r.name} (id: ${r.id})`).join('\n');
 
-	// Placeholder response for now
-	return json(
-		{
-			error:
-				'Chat API not implemented yet. Complete the AI Gateway lesson to enable this feature.'
+	const result = streamText({
+		model: getModel(),
+		system: `You are a helpful ski conditions assistant. Users want to create alerts for ski resort conditions.
+
+Available resorts:
+${resortList}
+
+When a user asks you to create an alert, use the create_alert tool with the appropriate parameters.
+Parse natural language like "notify me when Mammoth gets fresh powder" into structured alert conditions.
+
+For "fresh powder" or "new snow", use the conditions type with match: "powder".
+For specific snow amounts like "more than 6 inches", use snowfall type with the appropriate operator.
+For temperature conditions, use the temperature type.
+
+Always confirm the alert was created and explain what conditions will trigger it.`,
+		messages: [{ role: 'user', content: message }],
+		tools: {
+			create_alert: tool({
+				description: 'Create a new alert for ski resort conditions',
+				inputSchema: valibotSchema(CreateAlertToolInputSchema),
+				execute: async ({ resortId, condition }) => {
+					const resort = resorts.find((r) => r.id === resortId);
+					if (!resort) {
+						return { success: false, error: `Resort "${resortId}" not found` };
+					}
+
+					return {
+						success: true,
+						alert: {
+							resortId,
+							resortName: resort.name,
+							condition,
+							message: `Alert created for ${resort.name}`
+						}
+					};
+				}
+			})
 		},
-		{ status: 501 }
-	);
+		stopWhen: stepCountIs(3)
+	});
+
+	const encoder = new TextEncoder();
+	const stream = new ReadableStream({
+		async start(controller) {
+			for await (const part of result.fullStream) {
+				if (part.type === 'text-delta') {
+					controller.enqueue(
+						encoder.encode(`data: ${JSON.stringify({ type: 'text', content: part.text })}\n\n`)
+					);
+				} else if (part.type === 'tool-result') {
+					const toolResult = part.output as { success: boolean; alert?: unknown };
+					if (toolResult.success && toolResult.alert) {
+						controller.enqueue(
+							encoder.encode(
+								`data: ${JSON.stringify({ type: 'alert_created', alert: toolResult.alert })}\n\n`
+							)
+						);
+					}
+				}
+			}
+			controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+			controller.close();
+		}
+	});
+
+	return new Response(stream, {
+		headers: {
+			'Content-Type': 'text/event-stream',
+			'Cache-Control': 'no-cache',
+			Connection: 'keep-alive'
+		}
+	});
 };

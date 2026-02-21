@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { resorts, getResort } from '$lib/data/resorts';
-import { fetchWeather } from '$lib/services/weather';
+import { fetchWeather, fetchAllConditions } from '$lib/services/weather';
 import { evaluateCondition } from '$lib/services/alerts';
 import type { Alert } from '$lib/schemas/alert';
 import type { RequestHandler } from './$types';
@@ -18,7 +18,33 @@ interface EvaluationResult {
 	};
 }
 
+// Cacheable GET endpoint for current conditions
+export const GET: RequestHandler = async () => {
+	const conditions = await fetchAllConditions(resorts);
+
+	return json(
+		{
+			resorts: conditions.map(({ resort, weather }) => ({
+				id: resort.id,
+				name: resort.name,
+				conditions: weather.conditions,
+				temperature: weather.temperature,
+				snowfall: weather.snowfall24h
+			})),
+			fetchedAt: new Date().toISOString()
+		},
+		{
+			headers: {
+				'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
+			}
+		}
+	);
+};
+
+// POST handler for evaluating specific alerts (not cached)
 export const POST: RequestHandler = async ({ request }) => {
+	const requestId = crypto.randomUUID().slice(0, 8);
+	const startTime = Date.now();
 	const { alerts } = (await request.json()) as { alerts: Alert[] };
 
 	if (!alerts || !Array.isArray(alerts)) {
@@ -35,11 +61,17 @@ export const POST: RequestHandler = async ({ request }) => {
 		alertsByResort.set(alert.resortId, existing);
 	}
 
+	console.log(`[Evaluate] Started`, {
+		requestId,
+		alertCount: alerts.length,
+		resorts: [...alertsByResort.keys()]
+	});
+
 	// Fetch weather for each resort and evaluate alerts
 	for (const [resortId, resortAlerts] of alertsByResort) {
 		const resort = getResort(resortId);
 		if (!resort) {
-			console.warn(`Resort not found: ${resortId}`);
+			console.warn(`[Evaluate] Resort not found: ${resortId}`, { requestId });
 			continue;
 		}
 
@@ -63,10 +95,19 @@ export const POST: RequestHandler = async ({ request }) => {
 				});
 			}
 		} catch (error) {
-			console.error(`Failed to fetch weather for ${resort.name}:`, error);
-			// Continue with other resorts
+			console.error(`[Evaluate] Weather fetch failed for ${resort.name}:`, {
+				requestId,
+				error: String(error)
+			});
 		}
 	}
+
+	console.log(`[Evaluate] Completed`, {
+		requestId,
+		duration: Date.now() - startTime,
+		evaluated: results.length,
+		triggered: results.filter((r) => r.triggered).length
+	});
 
 	return json({
 		evaluated: results.length,
