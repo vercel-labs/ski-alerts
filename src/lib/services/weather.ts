@@ -43,7 +43,7 @@ export async function fetchWeather(resort: Resort): Promise<WeatherData> {
 	const url = new URL('https://api.open-meteo.com/v1/forecast');
 	url.searchParams.set('latitude', lat.toString());
 	url.searchParams.set('longitude', lon.toString());
-	url.searchParams.set('elevation', resort.elevation.summit.toString());
+	url.searchParams.set('elevation', Math.round(resort.elevation.summit * 0.3048).toString());
 	url.searchParams.set(
 		'current',
 		'temperature_2m,snowfall,weather_code,wind_speed_10m,relative_humidity_2m,snow_depth'
