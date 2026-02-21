@@ -1,6 +1,6 @@
 # Ski Alerts
 
-A SvelteKit app that tracks ski resort conditions and creates personalized alerts using AI. This is the starter project for the [Svelte on Vercel](https://vercel.com/academy) course.
+A SvelteKit app that tracks ski resort conditions and creates personalized alerts using AI. This is the starter project for the [Svelte on Vercel](https://vercel.com/academy/svelte-on-vercel) course.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Fski-alerts&env=AI_GATEWAY_API_KEY&envDescription=API%20key%20for%20the%20AI%20Gateway&project-name=ski-alerts)
 
