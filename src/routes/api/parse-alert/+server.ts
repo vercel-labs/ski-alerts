@@ -9,7 +9,7 @@ import type { RequestHandler } from './$types';
 // TODO: Import resort data and schemas
 // import { resorts } from '$lib/data/resorts';
 // import { CreateAlertToolInputSchema, AlertConditionSchema } from '$lib/schemas/alert';
-// import { env } from '$env/dynamic/private';
+// import { AI_GATEWAY_API_KEY } from '$env/static/private';
 
 // TODO: Create the AI Gateway client
 

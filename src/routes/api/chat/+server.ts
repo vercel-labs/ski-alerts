@@ -12,11 +12,11 @@ import type { RequestHandler } from './$types';
 // import { CreateAlertToolInputSchema } from '$lib/schemas/alert';
 
 // TODO: Import environment variables
-// import { env } from '$env/dynamic/private';
+// import { AI_GATEWAY_API_KEY } from '$env/static/private';
 
 // TODO: Create the AI Gateway client
 // const gateway = createGateway({
-//   apiKey: env.AI_GATEWAY_API_KEY ?? ''
+//   apiKey: AI_GATEWAY_API_KEY
 // });
 
 // TODO: Define the tool using the Valibot schema
