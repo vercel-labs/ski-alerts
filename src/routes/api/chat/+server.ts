@@ -2,22 +2,22 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 // TODO: Import AI SDK dependencies
-// import { createGateway, streamText, tool, stepCountIs } from 'ai';
-// import { valibotSchema } from '@ai-sdk/valibot';
+ import { createGateway, streamText, tool, stepCountIs } from 'ai';
+ import { valibotSchema } from '@ai-sdk/valibot';
 
 // TODO: Import resort data for the system prompt
-// import { resorts } from '$lib/data/resorts';
+ import { resorts } from '$lib/data/resorts';
 
 // TODO: Import the shared Valibot schema for tool input
-// import { CreateAlertToolInputSchema } from '$lib/schemas/alert';
+ import { CreateAlertToolInputSchema } from '$lib/schemas/alert';
 
 // TODO: Import environment variables
-// import { AI_GATEWAY_API_KEY } from '$env/static/private';
+import { AI_GATEWAY_API_KEY } from '$env/static/private';
 
 // TODO: Create the AI Gateway client
-// const gateway = createGateway({
-//   apiKey: AI_GATEWAY_API_KEY
-// });
+ const gateway = createGateway({
+  apiKey: AI_GATEWAY_API_KEY
+ });
 
 // TODO: Define the tool using the Valibot schema
 // Use tool() with:
