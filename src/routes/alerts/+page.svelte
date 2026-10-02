@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import AlertCard from '$lib/components/AlertCard.svelte';
-	import Chat from '$lib/components/Chat.svelte';
-	import { getAlerts, deleteAlert, resetAlert } from '$lib/services/alerts';
-	import type { Alert } from '$lib/schemas/alert';
+	import AlertCard from '#lib/components/AlertCard.svelte';
+	import Chat from '#lib/components/Chat.svelte';
+	import { getAlerts, deleteAlert, resetAlert } from '#lib/services/alerts.ts';
+	import type { Alert } from '#lib/schemas/alert.ts';
 
 	let alerts = $state<Alert[]>([]);
 

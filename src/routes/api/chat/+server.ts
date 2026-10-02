@@ -1,4 +1,3 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 // TODO: Import AI SDK dependencies
@@ -6,13 +5,13 @@ import type { RequestHandler } from './$types';
 // import { valibotSchema } from '@ai-sdk/valibot';
 
 // TODO: Import resort data for the system prompt
-// import { resorts } from '$lib/data/resorts';
+// import { resorts } from '#lib/data/resorts.ts';
 
 // TODO: Import the shared Valibot schema for tool input
-// import { CreateAlertToolInputSchema } from '$lib/schemas/alert';
+// import { CreateAlertToolInputSchema } from '#lib/schemas/alert.ts';
 
 // TODO: Import environment variables
-// import { AI_GATEWAY_API_KEY } from '$env/static/private';
+// import { AI_GATEWAY_API_KEY } from '$app/env/private';
 
 // TODO: Create the AI Gateway client
 // const gateway = createGateway({
@@ -43,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	// 5. Return a streaming response with SSE format
 
 	// Placeholder response for now
-	return json(
+	return Response.json(
 		{
 			error:
 				'Chat API not implemented yet. Complete the AI Gateway lesson to enable this feature.'

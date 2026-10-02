@@ -1,8 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { resorts, getResort } from '$lib/data/resorts';
-import { fetchWeather } from '$lib/services/weather';
-import { evaluateCondition } from '$lib/services/alerts';
-import type { Alert } from '$lib/schemas/alert';
+import { resorts, getResort } from '#lib/data/resorts.ts';
+import { fetchWeather } from '#lib/services/weather.ts';
+import { evaluateCondition } from '#lib/services/alerts.ts';
+import type { Alert } from '#lib/schemas/alert.ts';
 import type { RequestHandler } from './$types';
 
 interface EvaluationResult {
@@ -22,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { alerts } = (await request.json()) as { alerts: Alert[] };
 
 	if (!alerts || !Array.isArray(alerts)) {
-		return json({ error: 'alerts array required' }, { status: 400 });
+		return Response.json({ error: 'alerts array required' }, { status: 400 });
 	}
 
 	const results: EvaluationResult[] = [];
@@ -68,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 	}
 
-	return json({
+	return Response.json({
 		evaluated: results.length,
 		triggered: results.filter((r) => r.triggered).length,
 		results

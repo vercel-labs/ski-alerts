@@ -6,6 +6,8 @@ A SvelteKit app that tracks ski resort conditions and creates personalized alert
 
 ## Getting Started
 
+Use Node.js 24. This project uses SvelteKit 3, Svelte 5, Vite 8, and the Vercel adapter 7. SvelteKit and adapter options live in `vite.config.ts`.
+
 ```bash
 npm install
 cp .env.example .env  # Add your AI_GATEWAY_API_KEY

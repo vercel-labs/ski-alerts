@@ -1,4 +1,3 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 // TODO: Import AI SDK dependencies
@@ -7,9 +6,9 @@ import type { RequestHandler } from './$types';
 // import * as v from 'valibot';
 
 // TODO: Import resort data and schemas
-// import { resorts } from '$lib/data/resorts';
-// import { CreateAlertToolInputSchema, AlertConditionSchema } from '$lib/schemas/alert';
-// import { AI_GATEWAY_API_KEY } from '$env/static/private';
+// import { resorts } from '#lib/data/resorts.ts';
+// import { CreateAlertToolInputSchema, AlertConditionSchema } from '#lib/schemas/alert.ts';
+// import { AI_GATEWAY_API_KEY } from '$app/env/private';
 
 // TODO: Create the AI Gateway client
 
@@ -25,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { query } = await request.json();
 
 	if (!query || typeof query !== 'string') {
-		return json({ error: 'query string required' }, { status: 400 });
+		return Response.json({ error: 'query string required' }, { status: 400 });
 	}
 
 	// TODO: Implement structured output with generateText() + Output.object()
@@ -35,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	// 4. Validate the result with Valibot's parse()
 	// 5. Return the parsed alert data
 
-	return json(
+	return Response.json(
 		{
 			error:
 				'Parse alert API not implemented yet. Complete the Structured Output lesson to enable this feature.'

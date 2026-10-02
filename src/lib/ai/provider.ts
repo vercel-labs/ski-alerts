@@ -1,6 +1,6 @@
 // TODO: Import AI SDK dependencies
 // import { createGateway, wrapLanguageModel } from 'ai';
-// import { AI_GATEWAY_API_KEY } from '$env/static/private';
+// import { AI_GATEWAY_API_KEY } from '$app/env/private';
 
 // TODO: Create the AI Gateway client
 // const gateway = createGateway({

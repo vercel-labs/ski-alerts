@@ -1,14 +1,13 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 // TODO: Import Vercel functions for durable execution
 // import { waitUntil } from '@vercel/functions';
 
 // TODO: Import data and services
-// import { getResort } from '$lib/data/resorts';
-// import { fetchWeather } from '$lib/services/weather';
-// import { evaluateCondition } from '$lib/services/alerts';
-// import type { Alert } from '$lib/schemas/alert';
+// import { getResort } from '#lib/data/resorts.ts';
+// import { fetchWeather } from '#lib/services/weather.ts';
+// import { evaluateCondition } from '#lib/services/alerts.ts';
+// import type { Alert } from '#lib/schemas/alert.ts';
 
 // TODO: Define custom error classes for workflow error handling
 // class RetryableError extends Error {
@@ -37,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { alerts } = await request.json();
 
 	if (!alerts || !Array.isArray(alerts)) {
-		return json({ error: 'alerts array required' }, { status: 400 });
+		return Response.json({ error: 'alerts array required' }, { status: 400 });
 	}
 
 	// TODO: Implement the workflow
@@ -47,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	// 4. Handle RetryableError vs FatalError appropriately
 	// 5. Return summary with triggered alert IDs
 
-	return json(
+	return Response.json(
 		{
 			error:
 				'Workflow not implemented yet. Complete the Workflows lesson to enable this feature.'

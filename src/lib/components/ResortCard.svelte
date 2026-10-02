@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Resort } from '$lib/data/resorts';
-	import type { WeatherData } from '$lib/services/weather';
+	import type { Resort } from '#lib/data/resorts.ts';
+	import type { WeatherData } from '#lib/services/weather.ts';
 
 	interface Props {
 		resort: Resort;
