@@ -1,14 +1,13 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const config = {
-	runtime: 'edge'
+	runtime: 'nodejs24.x'
 };
 
 export const GET: RequestHandler = async () => {
-	return json({
+	return Response.json({
 		status: 'ok',
-		runtime: 'edge',
+		runtime: 'nodejs24.x',
 		timestamp: new Date().toISOString()
 	});
 };

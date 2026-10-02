@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { resorts } from '$lib/data/resorts';
-	import { createAlert } from '$lib/services/alerts';
-	import type { AlertCondition } from '$lib/schemas/alert';
+	import { resorts } from '#lib/data/resorts.ts';
+	import { createAlert } from '#lib/services/alerts.ts';
+	import type { AlertCondition } from '#lib/schemas/alert.ts';
 
 	interface Props {
 		onAlertCreated: () => void;

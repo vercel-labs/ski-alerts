@@ -1,5 +1,5 @@
-import { resorts } from '$lib/data/resorts';
-import { fetchAllConditions } from '$lib/services/weather';
+import { resorts } from '#lib/data/resorts.ts';
+import { fetchAllConditions } from '#lib/services/weather.ts';
 import type { PageServerLoad } from './$types';
 
 export const config = {

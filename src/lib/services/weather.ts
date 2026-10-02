@@ -1,4 +1,4 @@
-import type { Resort } from '$lib/data/resorts';
+import type { Resort } from '#lib/data/resorts.ts';
 
 export interface WeatherData {
 	temperature: number;

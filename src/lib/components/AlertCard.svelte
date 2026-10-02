@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Alert } from '$lib/schemas/alert';
-	import { describeCondition } from '$lib/schemas/alert';
-	import { getResort } from '$lib/data/resorts';
+	import type { Alert } from '#lib/schemas/alert.ts';
+	import { describeCondition } from '#lib/schemas/alert.ts';
+	import { getResort } from '#lib/data/resorts.ts';
 
 	interface Props {
 		alert: Alert;

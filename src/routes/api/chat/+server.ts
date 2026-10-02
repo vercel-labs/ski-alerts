@@ -1,8 +1,8 @@
 import { streamText, tool, stepCountIs } from 'ai';
 import { valibotSchema } from '@ai-sdk/valibot';
-import { resorts } from '$lib/data/resorts';
-import { CreateAlertToolInputSchema } from '$lib/schemas/alert';
-import { getModel } from '$lib/ai/provider';
+import { resorts } from '#lib/data/resorts.ts';
+import { CreateAlertToolInputSchema } from '#lib/schemas/alert.ts';
+import { getModel } from '#lib/ai/provider.ts';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {

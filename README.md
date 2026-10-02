@@ -4,6 +4,8 @@ This is the `complete` branch with the finished implementation for the [Svelte o
 
 ## Getting Started
 
+Use Node.js 24. This project uses SvelteKit 3, Svelte 5, Vite 8, and the Vercel adapter 7. SvelteKit and adapter options live in `vite.config.ts`.
+
 ```bash
 npm install
 cp .env.example .env  # Add your AI_GATEWAY_API_KEY
@@ -28,7 +30,7 @@ npm run dev
 | `/api/parse-alert` | POST | Structured output from natural language |
 | `/api/evaluate` | GET, POST | Alert evaluation against live weather |
 | `/api/workflow` | POST | Durable background workflow |
-| `/api/health` | GET | Edge runtime health check |
+| `/api/health` | GET | Node.js runtime health check |
 
 ## Environment Variables
 

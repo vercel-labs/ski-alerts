@@ -1,17 +1,16 @@
-import { json } from '@sveltejs/kit';
 import { generateText, Output } from 'ai';
 import { valibotSchema } from '@ai-sdk/valibot';
 import * as v from 'valibot';
-import { resorts } from '$lib/data/resorts';
-import { CreateAlertToolInputSchema, AlertConditionSchema } from '$lib/schemas/alert';
-import { getModel } from '$lib/ai/provider';
+import { resorts } from '#lib/data/resorts.ts';
+import { CreateAlertToolInputSchema, AlertConditionSchema } from '#lib/schemas/alert.ts';
+import { getModel } from '#lib/ai/provider.ts';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const { query } = await request.json();
 
 	if (!query || typeof query !== 'string') {
-		return json({ error: 'query string required' }, { status: 400 });
+		return Response.json({ error: 'query string required' }, { status: 400 });
 	}
 
 	const resortList = resorts.map((r) => `- ${r.name} (id: ${r.id})`).join('\n');
@@ -34,19 +33,19 @@ User request: "${query}"`
 	});
 
 	if (!output) {
-		return json({ error: 'AI returned no structured output' }, { status: 422 });
+		return Response.json({ error: 'AI returned no structured output' }, { status: 422 });
 	}
 
 	// Validate the condition with Valibot for runtime type safety
 	try {
 		v.parse(AlertConditionSchema, output.condition);
 	} catch {
-		return json({ error: 'AI returned invalid condition structure' }, { status: 422 });
+		return Response.json({ error: 'AI returned invalid condition structure' }, { status: 422 });
 	}
 
 	const resort = resorts.find((r) => r.id === output.resortId);
 
-	return json({
+	return Response.json({
 		resortId: output.resortId,
 		resortName: resort?.name ?? output.resortId,
 		condition: output.condition,

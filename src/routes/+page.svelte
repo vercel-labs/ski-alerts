@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ResortCard from '$lib/components/ResortCard.svelte';
-	import Chat from '$lib/components/Chat.svelte';
+	import ResortCard from '#lib/components/ResortCard.svelte';
+	import Chat from '#lib/components/Chat.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();

@@ -1,5 +1,5 @@
-import { browser } from '$app/environment';
-import type { Alert, AlertCondition, CreateAlert } from '$lib/schemas/alert';
+import { browser } from '$app/env';
+import type { Alert, AlertCondition, CreateAlert } from '#lib/schemas/alert.ts';
 import type { WeatherData } from './weather';
 
 const STORAGE_KEY = 'ski-alerts';
